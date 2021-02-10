@@ -140,28 +140,22 @@ void removeEvenValues(Stack* s)
 int isStackPairwiseConsecutive(Stack* s)
 {
 	int res = 1;
-	Stack evens, odds;
-	evens.ll.size = odds.ll.size = 0;
-	evens.ll.head = odds.ll.head = evens.ll.tail = odds.ll.tail = NULL;
+	Stack temp;
+	temp.ll.size = 0;
+	temp.ll.head = temp.ll.tail = NULL;
 
 	while (!isEmptyStack(s))
 	{
-		push(&evens, pop(s));
-		if (isEmptyStack(s)) // no pair, thus false
+		push(&temp, pop(s));
+		if (isEmptyStack(s) || (peek(&temp) - peek(s)) * (peek(&temp) - peek(s)) != 1) // no pair, thus false
 		{
 			res = 0;
-			pop(&evens);
+			break;
 		}
-		else
-			push(&odds, pop(s));
+		push(&temp, pop(s));
 	}
-	while (!isEmptyStack(&odds)) // both temp stacks have same number of items
-	{
-		if ((peek(&evens) - peek(&odds)) * (peek(&evens) - peek(&odds)) != 1) // pairwise consecutiveness check
-			res = 0;
-		push(s, pop(&odds));
-		push(s, pop(&evens)); // restore main stack, while emptying temp stacks
-	}
+	while (!isEmptyStack(&temp))
+		push(s, pop(&temp)); // restore main stack, while emptying temp stack
 	return res;
 }
 
